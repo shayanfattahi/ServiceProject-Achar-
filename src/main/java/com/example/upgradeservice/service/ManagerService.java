@@ -2,6 +2,7 @@ package com.example.upgradeservice.service;
 
 import com.example.upgradeservice.exception.DuplicateUserException;
 import com.example.upgradeservice.exception.InvalidOutPutException;
+import com.example.upgradeservice.model.Offered;
 import com.example.upgradeservice.model.order.Ordered;
 import com.example.upgradeservice.model.services.Services;
 import com.example.upgradeservice.model.services.UnderService;
@@ -27,58 +28,60 @@ public class ManagerService {
     final ManagerRepo managerRepo;
 
     final ReportService reportService;
+    final OfferedService offeredService;
 
-    public ManagerService(TechnicianService technicianService, JobService servicesService, SubjobService underServicesService, ClientService clientService, ManagerRepo managerRepo, ReportService reportService) {
+    public ManagerService(TechnicianService technicianService, JobService servicesService, SubjobService underServicesService, ClientService clientService, ManagerRepo managerRepo, ReportService reportService, OfferedService offeredService) {
         this.technicianService = technicianService;
         this.servicesService = servicesService;
         this.underServicesService = underServicesService;
         this.clientService = clientService;
         this.managerRepo = managerRepo;
         this.reportService = reportService;
+        this.offeredService = offeredService;
     }
 
-    public void changeStatusToActive(String email){
+    public void changeStatusToActive(String email) {
         if (technicianService.findByEmail(email) != null) {
             Technician technician = technicianService.findByEmail(email);
             technician.setTecStatus(TecStatus.ACTIVE);
             technicianService.create(technician);
-        }else
+        } else
             throw new InvalidOutPutException();
     }
 
-    public void createServices(String serviceName){
+    public void createServices(String serviceName) {
         Services services = new Services();
-        if (servicesService.readService(serviceName) == null){
+        if (servicesService.readService(serviceName) == null) {
             services.setName(serviceName);
             servicesService.createServices(services);
-        }else{
+        } else {
             throw new DuplicateUserException();
         }
     }
 
-    public void createUnderService(UnderService underService){
-        if (underServicesService.readByName(underService.getName()) == null){
+    public void createUnderService(UnderService underService) {
+        if (underServicesService.readByName(underService.getName()) == null) {
             underServicesService.createUnderServices(underService);
-        }else
+        } else
             throw new DuplicateUserException();
     }
 
-    public void editUnderServices(String name , String text , long money){
+    public void editUnderServices(String name, String text, long money) {
         UnderService underService = underServicesService.readByName(name);
-        if(underService == null){
+        if (underService == null) {
             throw new InvalidOutPutException();
-        }else {
+        } else {
             underService.setText(text);
             underService.setPrices(money);
             underServicesService.createUnderServices(underService);
         }
     }
 
-    public void deleteService(String name){
+    public void deleteService(String name) {
         servicesService.deleteService(name);
     }
 
-    public void addTechnicianToUnderService(String email , String name){
+    public void addTechnicianToUnderService(String email, String name) {
         Technician technician = technicianService.findByEmail(email);
         UnderService underService = underServicesService.readByName(name);
         if (technician.getTecStatus().equals(TecStatus.ACTIVE)) {
@@ -90,11 +93,11 @@ public class ManagerService {
             underService.setTechnician(technicians);
             technicianService.updateTechnician(technician);
             underServicesService.createUnderServices(underService);
-        }else
+        } else
             throw new InvalidOutPutException();
     }
 
-    public void deleteTechnicianAndUnderService(String email , String name){
+    public void deleteTechnicianAndUnderService(String email, String name) {
         Technician technician = technicianService.findByEmail(email);
         UnderService underService = underServicesService.readByName(name);
         managerRepo.deleteUnderserviceAndTech(technician.getId(), underService.getId());
@@ -132,19 +135,35 @@ public class ManagerService {
 //        return technicianService.getTechnicianByUnderService(id);
 //    }
 
-    public List<Technician> getTechByUnder(Long id){
+    public List<Technician> getTechByUnder(Long id) {
         return technicianService.getTechByUnderService(id);
     }
 
-    public List<Client> hasClientName(){
+    public List<Client> hasClientName() {
         return clientService.getClient();
     }
 
-    public List<Client> hasClientByEmail(String email){
+    public List<Client> hasClientByEmail(String email) {
         return clientService.getClientByEmail(email);
     }
 
-    public List<Ordered> getOrderedByEmailClient(String email){
+    public List<Ordered> getOrderedByEmailClient(String email) {
         return reportService.getOrderedByEmail(email);
+    }
+
+    public List<Offered> getOfferedByUnderService(String service) {
+        return offeredService.getOfferedByUnderService(service);
+    }
+
+    public List<Offered> getOfferedByStatus(boolean accepted){
+        return offeredService.getOfferedByStatus(accepted);
+    }
+
+    public List<Offered> getOfferedByService(Long service) {
+        return offeredService.getOfferedByService(service);
+    }
+
+    public List<Offered> getOfferedByDate(){
+        return offeredService.getOfferedByDate();
     }
 }

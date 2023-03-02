@@ -6,7 +6,15 @@ import com.example.upgradeservice.exception.InvalidOutPutException;
 import com.example.upgradeservice.model.Offered;
 import com.example.upgradeservice.model.order.Ordered;
 import com.example.upgradeservice.model.order.OrderedStatus;
+import com.example.upgradeservice.model.services.UnderService;
 import com.example.upgradeservice.repository.OfferedRepo;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,10 +24,12 @@ import java.util.Optional;
 public class OfferedService {
     final OfferedRepo offeredRepo;
     final ReportService reportService;
+    final SubjobService subjobService;
 
-    public OfferedService(OfferedRepo offeredRepo, ReportService reportService) {
+    public OfferedService(OfferedRepo offeredRepo, ReportService reportService, SubjobService subjobService) {
         this.offeredRepo = offeredRepo;
         this.reportService = reportService;
+        this.subjobService = subjobService;
     }
 
     public Offered readById(Long id){
@@ -68,5 +78,41 @@ public class OfferedService {
         }else
             throw new InvalidOutPutException();
 
+    }
+
+    @PersistenceContext
+    private EntityManager em;
+
+    @Transactional
+    List<Offered> getOfferedByUnderService(String service){
+        UnderService underService = subjobService.readByName(service);
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Offered> criteriaQuery = criteriaBuilder.createQuery(Offered.class);
+        Root<Offered> studentRoot = criteriaQuery.from(Offered.class);
+        criteriaQuery.select(studentRoot);
+        criteriaQuery.where(criteriaBuilder.equal(studentRoot.get("underService"), underService ));
+        TypedQuery<Offered> typedQuery = em.createQuery(criteriaQuery);
+        List<Offered> studentList = typedQuery.getResultList();
+        return studentList;
+    }
+
+    @Transactional
+    List<Offered> getOfferedByStatus(boolean accepted){
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Offered> criteriaQuery = criteriaBuilder.createQuery(Offered.class);
+        Root<Offered> studentRoot = criteriaQuery.from(Offered.class);
+        criteriaQuery.select(studentRoot);
+        criteriaQuery.where(criteriaBuilder.equal(studentRoot.get("accepted"), accepted ));
+        TypedQuery<Offered> typedQuery = em.createQuery(criteriaQuery);
+        List<Offered> studentList = typedQuery.getResultList();
+        return studentList;
+    }
+
+    public List<Offered> getOfferedByService(Long service){
+        return offeredRepo.readOfferedByService(service);
+    }
+
+    public List<Offered> getOfferedByDate(){
+        return offeredRepo.readOfferedBySpecialDate();
     }
 }
