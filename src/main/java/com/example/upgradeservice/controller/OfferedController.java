@@ -39,17 +39,19 @@ public class OfferedController {
         offeredService.creatOffered(offered);
     }
 
-    @GetMapping("/offeredSortByPrice/{clientId}/{orderedId}")
+    @GetMapping("/offeredSortByPrice/{orderedId}")
     @PreAuthorize("hasRole('CLIENT')")
 
-    public List<Offered> readOfferedSortByPrice(@PathVariable Long clientId , @PathVariable Long orderedId) {
-        return offeredService.readOfferedSortByPrice(clientId , orderedId);
+    public List<Offered> readOfferedSortByPrice(@PathVariable Long orderedId) {
+        Client client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return offeredService.readOfferedSortByPrice(client.getId() , orderedId);
     }
 
-    @GetMapping("/offeredSortByTechnician/{clientId}")
+    @GetMapping("/offeredSortByTechnician")
     @PreAuthorize("hasRole('CLIENT')")
-    public List<Offered> readTopTechnician(@PathVariable Long clientId) {
-        return offeredService.readTopTechnician(clientId);
+    public List<Offered> readTopTechnician() {
+        Client client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return offeredService.readTopTechnician(client.getId());
     }
 
     @PutMapping("/acceptOffered/{offeredId}")

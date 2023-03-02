@@ -1,6 +1,7 @@
 package com.example.upgradeservice.config;
 
 import com.example.upgradeservice.repository.ClientRepo;
+import com.example.upgradeservice.repository.ManagerRepo;
 import com.example.upgradeservice.repository.TechnicianRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,11 +22,13 @@ public class SecurityConfig{
     private final ClientRepo clientRepo;
     private final BCryptPasswordEncoder passwordEncoder;
     private final TechnicianRepo technicianRepo;
+    private final ManagerRepo managerRepo;
 
-    public SecurityConfig(ClientRepo clientRepo, BCryptPasswordEncoder passwordEncoder, TechnicianRepo technicianRepo) {
+    public SecurityConfig(ClientRepo clientRepo, BCryptPasswordEncoder passwordEncoder, TechnicianRepo technicianRepo, ManagerRepo managerRepo) {
         this.clientRepo = clientRepo;
         this.passwordEncoder = passwordEncoder;
         this.technicianRepo = technicianRepo;
+        this.managerRepo = managerRepo;
     }
 
     @Bean
@@ -51,6 +54,10 @@ public class SecurityConfig{
                 .passwordEncoder(passwordEncoder).and()
                 .userDetailsService((username) -> technicianRepo
                         .findClientByEmail(username)
+                        .orElseThrow(() -> new UsernameNotFoundException(String.format("This %s notFound!", username))))
+                .passwordEncoder(passwordEncoder).and()
+                .userDetailsService((username) -> managerRepo
+                        .findManagerByUsername(username)
                         .orElseThrow(() -> new UsernameNotFoundException(String.format("This %s notFound!", username))))
                 .passwordEncoder(passwordEncoder);
     }

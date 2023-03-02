@@ -9,6 +9,7 @@ import com.example.upgradeservice.dto.ordered.OrderedDto;
 import com.example.upgradeservice.dto.ordered.OrderedMapper;
 import com.example.upgradeservice.model.order.Ordered;
 import com.example.upgradeservice.model.users.Client;
+import com.example.upgradeservice.model.users.Technician;
 import com.example.upgradeservice.service.ClientService;
 import com.example.upgradeservice.service.ReportService;
 import com.example.upgradeservice.service.SubjobService;
@@ -54,18 +55,20 @@ public class ReportController {
         reportService.createOrder(ordered);
     }
 
-    @GetMapping("/readLogInClientOrder/{clientId}")
+    @GetMapping("/readLogInClientOrder")
     @PreAuthorize("hasRole('CLIENT')")
 
-    public List<GetOrderedDto> readLogInClientOrder(@PathVariable Long clientId){
-        return modelToGetDto(reportService.readLogInClientOrder(clientId));
+    public List<GetOrderedDto> readLogInClientOrder(){
+        Client client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return modelToGetDto(reportService.readLogInClientOrder(client.getId()));
     }
 
-    @GetMapping("/readSuitableTech/{technicianId}")
-    @PreAuthorize("hasRole('TENCHNICAN')")
+    @GetMapping("/readSuitableTech")
+    @PreAuthorize("hasRole('TECHNICIAN')")
 
-    public List<Ordered> readSuitableTech(@PathVariable Long technicianId){
-        return reportService.readSuitableTech(technicianId);
+    public List<Ordered> readSuitableTech(){
+        Technician technician = (Technician) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return reportService.readSuitableTech(technician.getId());
     }
 
     @GetMapping("/makeIsDone/{id}/{point}")
