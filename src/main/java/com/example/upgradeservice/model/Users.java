@@ -7,7 +7,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,11 +30,7 @@ public class Users implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> list = new ArrayList<>();
-        list.add(new SimpleGrantedAuthority(getRole().name()));
-        return list;
-
-//        return Collections.singleton(new SimpleGrantedAuthority(getRole().name()));
+        return List.of(new SimpleGrantedAuthority(getRole().name()));
     }
 
     @Override

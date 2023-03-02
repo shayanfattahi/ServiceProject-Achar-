@@ -63,40 +63,40 @@ public class ManagerController {
         managerService.deleteTechnicianAndUnderService(email , name);
     }
 
-    @GetMapping("/getClientByName/{name}")
-    public List<Client> getClientByName(@PathVariable String name){
-        return managerService.getClientByName(name);
-    }
-
-    @GetMapping("/getTechnicianByPoint")
-    public List<Technician> getTechnicianByPoint(){
-        return managerService.getTechnicianByPoint();
-    }
-
-    @GetMapping("/getClientByLastName/{lastname}")
-    public List<Client> getClientByLastName(@PathVariable String lastname){
-        return managerService.getClientByLatName(lastname);
-    }
-
-    @GetMapping("/getClientByEmail/{email}")
-    public Client getClientByEmailName(@PathVariable String email){
-        return managerService.getClientByEmail(email);
-    }
-
-    @GetMapping("/getTechnicianByName/{name}")
-    public List<Technician> getTechnicianByName(@PathVariable String name){
-        return managerService.getTechnicianByName(name);
-    }
-
-    @GetMapping("/getTechnicianByLastName/{lastname}")
-    public List<Technician> getTechnicianByLastName(@PathVariable String lastname){
-        return managerService.getTechnicianByLastName(lastname);
-    }
-
-    @GetMapping("/getTechnicianByEmail/{email}")
-    public Technician getTechnicianByEmail(@PathVariable String email){
-        return managerService.getTechnicianByEmail(email);
-    }
+//    @GetMapping("/getClientByName/{name}")
+//    public List<Client> getClientByName(@PathVariable String name){
+//        return managerService.getClientByName(name);
+//    }
+//
+//    @GetMapping("/getTechnicianByPoint")
+//    public List<Technician> getTechnicianByPoint(){
+//        return managerService.getTechnicianByPoint();
+//    }
+//
+//    @GetMapping("/getClientByLastName/{lastname}")
+//    public List<Client> getClientByLastName(@PathVariable String lastname){
+//        return managerService.getClientByLatName(lastname);
+//    }
+//
+//    @GetMapping("/getClientByEmail/{email}")
+//    public Client getClientByEmailName(@PathVariable String email){
+//        return managerService.getClientByEmail(email);
+//    }
+//
+//    @GetMapping("/getTechnicianByName/{name}")
+//    public List<Technician> getTechnicianByName(@PathVariable String name){
+//        return managerService.getTechnicianByName(name);
+//    }
+//
+//    @GetMapping("/getTechnicianByLastName/{lastname}")
+//    public List<Technician> getTechnicianByLastName(@PathVariable String lastname){
+//        return managerService.getTechnicianByLastName(lastname);
+//    }
+//
+//    @GetMapping("/getTechnicianByEmail/{email}")
+//    public Technician getTechnicianByEmail(@PathVariable String email){
+//        return managerService.getTechnicianByEmail(email);
+//    }
 
     @GetMapping("/getTechnicianByUnderServices/{id}")
     public List<Technician> getTechnicianByUnderServices(@PathVariable Long id){

@@ -6,20 +6,22 @@ import com.example.upgradeservice.dto.client.GetClientDto;
 import com.example.upgradeservice.model.users.Client;
 import com.example.upgradeservice.service.ClientService;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @Controller
 @RequestMapping("/Client")
 public class ClientController{
     private final ClientService clientService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public ClientController(ClientService clientService) {
+    public ClientController(ClientService clientService, BCryptPasswordEncoder passwordEncoder) {
         this.clientService = clientService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     private Client dtoToModelWithMapStruct(ClientDto clientDto) {
@@ -36,24 +38,12 @@ public class ClientController{
         return clientDto;
     }
 
-    @GetMapping("/logIn/{email}/{pass}")
-//    @PreAuthorize("hasRole('Client')")
-    public GetClientDto logIn(@PathVariable String email , @PathVariable String pass){
-        Optional<Client> client = clientService.signIn(email, pass);
-        return modelToGetDto(client.get());
-    }
-
-    @PutMapping("/changePass/{email}/{pass}/{passNew}")
-    public String changePass(@PathVariable String email , @PathVariable String pass , @PathVariable String passNew ){
-        clientService.changePass(email , pass , passNew);
-        return "ok";
-    }
-
     @PutMapping("/changingpass")
-//    @PreAuthorize("hasRole('CLIENT')")
-    public String changePass(){
+    @PreAuthorize("hasRole('CLIENT')")
+    public String changePass(@RequestBody String pass){
         Client client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        client.setPass("manDeg*!!!");
+        client.setPass(passwordEncoder.encode(client.getPassword()));
+        clientService.create(client);
         return "ok";
     }
 }

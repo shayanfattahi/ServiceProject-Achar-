@@ -1,20 +1,17 @@
 package com.example.upgradeservice.controller;
 
-import com.example.upgradeservice.dto.client.ClientDto;
-import com.example.upgradeservice.dto.client.ClientMapper;
-import com.example.upgradeservice.dto.client.GetClientDto;
 import com.example.upgradeservice.dto.technician.GetTechnicianDto;
 import com.example.upgradeservice.dto.technician.TechnicianDto;
 import com.example.upgradeservice.dto.technician.TechnicianMapper;
-import com.example.upgradeservice.model.users.Client;
 import com.example.upgradeservice.model.users.TecStatus;
 import com.example.upgradeservice.model.users.Technician;
 import com.example.upgradeservice.service.TechnicianService;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @Controller
@@ -22,9 +19,12 @@ import java.util.Optional;
 public class TechnicianController {
 
     private final TechnicianService technicianService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public TechnicianController(TechnicianService technicianService) {
+
+    public TechnicianController(TechnicianService technicianService, BCryptPasswordEncoder passwordEncoder) {
         this.technicianService = technicianService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     private Technician dtoToModelWithMapStruct(TechnicianDto technicianDto) {
@@ -42,13 +42,12 @@ public class TechnicianController {
         return "ok";
     }
 
-    @PostMapping("/logIn")
-    public GetTechnicianDto logIn(@RequestBody Technician technician){
-        return modelToGetDto(technicianService.signIn(technician.getEmail() , technician.getPass()).get());
-    }
-
-    @PutMapping("/changePass/{email}/{pass}/{passNew}")
-    public void changePass(@PathVariable String email , @PathVariable String pass , @PathVariable String passNew ){
-        technicianService.changePass(email , pass , passNew);
+    @PutMapping("/changingpass")
+    @PreAuthorize("hasRole('TECHNICIAN')")
+    public String changePass(@RequestBody String pass){
+        Technician technician = (Technician) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        technician.setPass(passwordEncoder.encode(technician.getPassword()));
+        technicianService.create(technician);
+        return "ok";
     }
 }

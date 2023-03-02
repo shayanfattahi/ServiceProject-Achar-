@@ -4,14 +4,8 @@ import com.example.upgradeservice.exception.*;
 import com.example.upgradeservice.model.users.Client;
 import com.example.upgradeservice.repository.ClientRepo;
 import com.example.upgradeservice.utils.Utils;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.List;
 import java.util.Optional;
 
 @Service
