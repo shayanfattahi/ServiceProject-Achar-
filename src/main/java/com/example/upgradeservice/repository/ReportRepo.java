@@ -29,4 +29,6 @@ public interface ReportRepo extends JpaRepository<Ordered , Long> {
     @Query(value = "SELECT COUNT(client_id)\n" +
             "FROM ordered where client_id =?1" , nativeQuery = true)
     int findCountOfClient(Long id);
+
+    List<Ordered> readOrderedByTechnicianId(Long id);
 }

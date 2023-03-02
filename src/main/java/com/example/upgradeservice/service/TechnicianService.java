@@ -1,17 +1,12 @@
 package com.example.upgradeservice.service;
 
 import com.example.upgradeservice.exception.*;
+import com.example.upgradeservice.model.order.Ordered;
 import com.example.upgradeservice.model.users.Technician;
 import com.example.upgradeservice.repository.TechnicianRepo;
 import com.example.upgradeservice.utils.Utils;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +14,11 @@ import java.util.Optional;
 public class TechnicianService {
 
     private final TechnicianRepo technicianRepo;
-    public TechnicianService(TechnicianRepo technicianRepo) {
+    private final ReportService reportService;
+
+    public TechnicianService(TechnicianRepo technicianRepo, ReportService reportService) {
         this.technicianRepo = technicianRepo;
+        this.reportService = reportService;
     }
 
     public void createTechnician(Technician technician){
@@ -122,5 +120,7 @@ public class TechnicianService {
         return technicianRepo.TechnicianByUnderService(id);
     }
 
-
+    public List<Ordered> getOrderedOfTechnician(Long id){
+        return reportService.readOrderOfTechnician(id);
+    }
 }

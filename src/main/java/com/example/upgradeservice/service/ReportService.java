@@ -165,4 +165,8 @@ public class ReportService {
     public int findCountOfClient(Long id){
         return reportRepo.findCountOfClient(id);
     }
+
+    public List<Ordered> readOrderOfTechnician(Long id){
+        return reportRepo.readOrderedByTechnicianId(id);
+    }
 }
