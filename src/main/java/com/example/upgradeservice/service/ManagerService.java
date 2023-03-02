@@ -134,4 +134,12 @@ public class ManagerService {
     public List<Technician> getTechByUnder(Long id){
         return technicianService.getTechByUnderService(id);
     }
+
+    public List<Client> hasClientName(){
+        return clientService.getClient();
+    }
+
+    public List<Client> hasClientByEmail(String email){
+        return clientService.getClientByEmail(email);
+    }
 }

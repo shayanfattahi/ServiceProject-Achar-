@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface TechnicianRepo extends JpaRepository<Technician , Long> {
 
-    Technician findClientByEmail(String email);
+    Optional<Technician> findClientByEmail(String email);
 
     Optional<Technician> findClientByEmailAndPass(String email , String pass);
 

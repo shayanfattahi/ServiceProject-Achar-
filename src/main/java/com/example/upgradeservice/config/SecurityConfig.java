@@ -1,6 +1,7 @@
 package com.example.upgradeservice.config;
 
 import com.example.upgradeservice.repository.ClientRepo;
+import com.example.upgradeservice.repository.TechnicianRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,10 +20,12 @@ public class SecurityConfig{
 
     private final ClientRepo clientRepo;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final TechnicianRepo technicianRepo;
 
-    public SecurityConfig(ClientRepo clientRepo, BCryptPasswordEncoder passwordEncoder) {
+    public SecurityConfig(ClientRepo clientRepo, BCryptPasswordEncoder passwordEncoder, TechnicianRepo technicianRepo) {
         this.clientRepo = clientRepo;
         this.passwordEncoder = passwordEncoder;
+        this.technicianRepo = technicianRepo;
     }
 
     @Bean
@@ -32,7 +35,7 @@ public class SecurityConfig{
                 .authorizeHttpRequests()
                 .requestMatchers("/Client/register").permitAll()
                 .requestMatchers("/Technician/register").permitAll()
-                .requestMatchers("/Manager/**").hasRole("ADMIN")
+                .requestMatchers("/Manager/**").permitAll()
                 .anyRequest().authenticated()
                 .and().httpBasic();
 
@@ -43,6 +46,10 @@ public class SecurityConfig{
     public void configureGlobal(AuthenticationManagerBuilder auth)
             throws Exception {
         auth.userDetailsService((username) -> clientRepo
+                        .findClientByEmail(username)
+                        .orElseThrow(() -> new UsernameNotFoundException(String.format("This %s notFound!", username))))
+                .passwordEncoder(passwordEncoder).and()
+                .userDetailsService((username) -> technicianRepo
                         .findClientByEmail(username)
                         .orElseThrow(() -> new UsernameNotFoundException(String.format("This %s notFound!", username))))
                 .passwordEncoder(passwordEncoder);

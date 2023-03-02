@@ -6,6 +6,7 @@ import com.example.upgradeservice.model.users.TecStatus;
 import com.example.upgradeservice.model.users.Technician;
 import com.example.upgradeservice.service.JobService;
 import com.example.upgradeservice.service.ManagerService;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -63,10 +64,10 @@ public class ManagerController {
         managerService.deleteTechnicianAndUnderService(email , name);
     }
 
-//    @GetMapping("/getClientByName/{name}")
-//    public List<Client> getClientByName(@PathVariable String name){
-//        return managerService.getClientByName(name);
-//    }
+    @GetMapping("/getClientByName")
+    public List<Client> getClient(){
+        return managerService.hasClientName();
+    }
 //
 //    @GetMapping("/getTechnicianByPoint")
 //    public List<Technician> getTechnicianByPoint(){
@@ -78,10 +79,10 @@ public class ManagerController {
 //        return managerService.getClientByLatName(lastname);
 //    }
 //
-//    @GetMapping("/getClientByEmail/{email}")
-//    public Client getClientByEmailName(@PathVariable String email){
-//        return managerService.getClientByEmail(email);
-//    }
+    @GetMapping("/getClientByEmail/{email}")
+    public List<Client> getClientByEmailName(@PathVariable String email){
+        return managerService.hasClientByEmail(email);
+    }
 //
 //    @GetMapping("/getTechnicianByName/{name}")
 //    public List<Technician> getTechnicianByName(@PathVariable String name){

@@ -25,7 +25,7 @@ public class TechnicianService {
 
     public void createTechnician(Technician technician){
         technician.setDate(Utils.Date_today);
-        if (technicianRepo.findClientByEmail(technician.getEmail()) != null){
+        if (technicianRepo.findClientByEmail(technician.getEmail()).isPresent()){
             throw new DuplicateUserException();
         }
 
@@ -43,14 +43,14 @@ public class TechnicianService {
     }
 
     public Optional<Technician> signIn(String email , String pass){
-        if (technicianRepo.findClientByEmail(email) == null || !technicianRepo.findClientByEmailAndPass(email, pass).isPresent()){
+        if (!technicianRepo.findClientByEmail(email).isPresent() || !technicianRepo.findClientByEmailAndPass(email, pass).isPresent()){
             throw new InvalidEntityException();
         }else
             return technicianRepo.findClientByEmailAndPass(email , pass);
     }
 
     public Technician findByEmail(String email){
-        return technicianRepo.findClientByEmail(email);
+        return technicianRepo.findClientByEmail(email).get();
     }
 
     public void create(Technician technician){
