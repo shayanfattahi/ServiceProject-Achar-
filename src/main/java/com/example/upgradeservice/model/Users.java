@@ -63,8 +63,3 @@ public class Users implements UserDetails {
         return true;
     }
 }
-enum Role {
-    ROLE_ADMIN,
-    ROLE_CLIENT,
-    ROLE_TECHNICIAN
-}

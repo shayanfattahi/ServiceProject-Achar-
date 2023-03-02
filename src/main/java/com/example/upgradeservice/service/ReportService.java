@@ -30,6 +30,7 @@ public class ReportService {
     final ReportRepo reportRepo;
     final TechnicianService technicianService;
     final ClientService clientService;
+
     public ReportService(ReportRepo orderedRepo, TechnicianService technicianService, ClientService clientService) {
         this.reportRepo = orderedRepo;
         this.technicianService = technicianService;

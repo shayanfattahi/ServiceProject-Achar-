@@ -1,6 +1,7 @@
 package com.example.upgradeservice.service;
 
 import com.example.upgradeservice.exception.*;
+import com.example.upgradeservice.model.Role;
 import com.example.upgradeservice.model.users.Client;
 import com.example.upgradeservice.repository.ClientRepo;
 import com.example.upgradeservice.utils.Utils;
@@ -45,6 +46,7 @@ public class ClientService {
             throw new InvalidDateException();
         }
         client.setPass(passwordEncoder.encode(client.getPassword()));
+        client.setRole(Role.ROLE_CLIENT);
         clientRepo.save(client);
     }
 

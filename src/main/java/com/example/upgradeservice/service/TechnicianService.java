@@ -1,10 +1,11 @@
 package com.example.upgradeservice.service;
 
 import com.example.upgradeservice.exception.*;
-import com.example.upgradeservice.model.order.Ordered;
+import com.example.upgradeservice.model.Role;
 import com.example.upgradeservice.model.users.Technician;
 import com.example.upgradeservice.repository.TechnicianRepo;
 import com.example.upgradeservice.utils.Utils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,11 +15,12 @@ import java.util.Optional;
 public class TechnicianService {
 
     private final TechnicianRepo technicianRepo;
-    private final ReportService reportService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public TechnicianService(TechnicianRepo technicianRepo, ReportService reportService) {
+
+    public TechnicianService(TechnicianRepo technicianRepo, BCryptPasswordEncoder passwordEncoder) {
         this.technicianRepo = technicianRepo;
-        this.reportService = reportService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void createTechnician(Technician technician){
@@ -37,6 +39,8 @@ public class TechnicianService {
         {
             throw new InvalidDateException();
         }
+        technician.setPass(passwordEncoder.encode(technician.getPassword()));
+        technician.setRole(Role.ROLE_TECHNICIAN);
         technicianRepo.save(technician);
     }
 
@@ -120,7 +124,7 @@ public class TechnicianService {
         return technicianRepo.TechnicianByUnderService(id);
     }
 
-    public List<Ordered> getOrderedOfTechnician(Long id){
-        return reportService.readOrderOfTechnician(id);
-    }
+//    public List<Ordered> getOrderedOfTechnician(Long id){
+//        return reportService.readOrderOfTechnician(id);
+//    }
 }
