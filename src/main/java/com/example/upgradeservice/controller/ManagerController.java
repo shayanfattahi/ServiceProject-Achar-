@@ -1,5 +1,6 @@
 package com.example.upgradeservice.controller;
 
+import com.example.upgradeservice.model.order.Ordered;
 import com.example.upgradeservice.model.services.UnderService;
 import com.example.upgradeservice.model.users.Client;
 import com.example.upgradeservice.model.users.TecStatus;
@@ -102,6 +103,11 @@ public class ManagerController {
     @GetMapping("/getTechnicianByUnderServices/{id}")
     public List<Technician> getTechnicianByUnderServices(@PathVariable Long id){
         return managerService.getTechByUnder(id);
+    }
+
+    @GetMapping("/getOrderedByEmailClient/{email}")
+    public List<Ordered> getOrderedByEmailClient(@PathVariable String email){
+        return managerService.getOrderedByEmailClient(email);
     }
 
 

@@ -1,19 +1,17 @@
 package com.example.upgradeservice.service;
 
-import com.example.upgradeservice.dto.technician.GetTechnicianDto;
 import com.example.upgradeservice.exception.DuplicateUserException;
 import com.example.upgradeservice.exception.InvalidOutPutException;
+import com.example.upgradeservice.model.order.Ordered;
 import com.example.upgradeservice.model.services.Services;
 import com.example.upgradeservice.model.services.UnderService;
 import com.example.upgradeservice.model.users.Client;
 import com.example.upgradeservice.model.users.TecStatus;
 import com.example.upgradeservice.model.users.Technician;
 import com.example.upgradeservice.repository.ManagerRepo;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -28,12 +26,15 @@ public class ManagerService {
     ClientService clientService;
     final ManagerRepo managerRepo;
 
-    public ManagerService(TechnicianService technicianService, JobService servicesService, SubjobService underServicesService, ClientService clientService, ManagerRepo managerRepo) {
+    final ReportService reportService;
+
+    public ManagerService(TechnicianService technicianService, JobService servicesService, SubjobService underServicesService, ClientService clientService, ManagerRepo managerRepo, ReportService reportService) {
         this.technicianService = technicianService;
         this.servicesService = servicesService;
         this.underServicesService = underServicesService;
         this.clientService = clientService;
         this.managerRepo = managerRepo;
+        this.reportService = reportService;
     }
 
     public void changeStatusToActive(String email){
@@ -141,5 +142,9 @@ public class ManagerService {
 
     public List<Client> hasClientByEmail(String email){
         return clientService.getClientByEmail(email);
+    }
+
+    public List<Ordered> getOrderedByEmailClient(String email){
+        return reportService.getOrderedByEmail(email);
     }
 }

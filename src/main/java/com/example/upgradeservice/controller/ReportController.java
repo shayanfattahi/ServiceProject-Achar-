@@ -14,6 +14,7 @@ import com.example.upgradeservice.service.ReportService;
 import com.example.upgradeservice.service.SubjobService;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,12 +43,13 @@ public class ReportController {
         return OrderedMapper.INSTANCE.modelToGetDto(ordered);
     }
 
-    @PostMapping("/createOrder/{clientId}/{underServiceId}")
+    @PostMapping("/createOrder/{underServiceId}")
     @PreAuthorize("hasRole('CLIENT')")
 
-    public void createOrder(@Valid @RequestBody OrderedDto orderedDto, @PathVariable String clientId , @PathVariable String underServiceId){
+    public void createOrder(@Valid @RequestBody OrderedDto orderedDto, @PathVariable String underServiceId){
+        Client client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Ordered ordered = dtoToModelWithMapStruct(orderedDto);
-        ordered.setClient(clientService.findByEmail(clientId));
+        ordered.setClient(client);
         ordered.setUnderService(subjobService.readByName(underServiceId));
         reportService.createOrder(ordered);
     }

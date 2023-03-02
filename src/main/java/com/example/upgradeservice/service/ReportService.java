@@ -11,6 +11,13 @@ import com.example.upgradeservice.model.users.TecStatus;
 import com.example.upgradeservice.model.users.Technician;
 import com.example.upgradeservice.repository.ReportRepo;
 import com.example.upgradeservice.utils.Utils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -135,5 +142,23 @@ public class ReportService {
                 throw new InvalidOutPutException();
             }
         }
+    }
+
+    @PersistenceContext
+    private EntityManager em;
+
+    @Transactional
+    List<Ordered> getOrderedByEmail(String email){
+        Client client = clientService.findByEmail(email);
+        System.out.println(client.getEmail());
+        System.out.println(client.getId());
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Ordered> criteriaQuery = criteriaBuilder.createQuery(Ordered.class);
+        Root<Ordered> studentRoot = criteriaQuery.from(Ordered.class);
+        criteriaQuery.select(studentRoot);
+        criteriaQuery.where(criteriaBuilder.equal(studentRoot.get("client"), client ));
+        TypedQuery<Ordered> typedQuery = em.createQuery(criteriaQuery);
+        List<Ordered> studentList = typedQuery.getResultList();
+        return studentList;
     }
 }
