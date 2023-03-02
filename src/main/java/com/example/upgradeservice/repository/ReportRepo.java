@@ -25,4 +25,8 @@ public interface ReportRepo extends JpaRepository<Ordered , Long> {
 
     @Query(value ="select * from ordered where under_service_id in (select under_services_id from technician_under_services where technician_id=?1) and ordered.ordered_status = 'WAITINGFOROFFERED'" , nativeQuery = true)
     List<Ordered> findSuitable(Long id);
+
+    @Query(value = "SELECT COUNT(client_id)\n" +
+            "FROM ordered where client_id =?1" , nativeQuery = true)
+    int findCountOfClient(Long id);
 }

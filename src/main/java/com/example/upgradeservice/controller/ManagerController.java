@@ -73,7 +73,7 @@ public class ManagerController {
     }
 
 
-//    @GetMapping("/getTechnicianByPoint")
+    //    @GetMapping("/getTechnicianByPoint")
 //    public List<Technician> getTechnicianByPoint(){
 //        return managerService.getTechnicianByPoint();
 //    }
@@ -129,7 +129,17 @@ public class ManagerController {
     }
 
     @GetMapping("/getOfferedByDate")
-    public List<Offered> getOfferedByDate(){
+    public List<Offered> getOfferedByDate() {
         return managerService.getOfferedByDate();
+    }
+
+    @GetMapping("/findCountOfClient/{id}")
+    public int findCountOfClient(@PathVariable Long id) {
+        return managerService.findCountOfClient(id);
+    }
+
+    @GetMapping("/findCountOfTechnician/{id}")
+    public int findCountOfTechnician(@PathVariable Long id) {
+        return managerService.findCountOfTechnician(id);
     }
 }

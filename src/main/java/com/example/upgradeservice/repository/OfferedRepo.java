@@ -30,4 +30,8 @@ public interface OfferedRepo extends JpaRepository<Offered , Long> {
     @Query(value = "SELECT * FROM Offered \n" +
             "WHERE date BETWEEN 14011101 AND 14020101" , nativeQuery = true)
     List<Offered> readOfferedBySpecialDate();
+
+    @Query(value = "SELECT COUNT(technician_id)\n" +
+            "FROM offered where technician_id =?1" , nativeQuery = true)
+    int findCountOfTechnician(Long id);
 }

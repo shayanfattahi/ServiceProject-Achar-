@@ -161,4 +161,8 @@ public class ReportService {
         List<Ordered> studentList = typedQuery.getResultList();
         return studentList;
     }
+
+    public int findCountOfClient(Long id){
+        return reportRepo.findCountOfClient(id);
+    }
 }

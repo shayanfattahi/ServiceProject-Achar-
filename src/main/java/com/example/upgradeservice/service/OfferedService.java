@@ -115,4 +115,9 @@ public class OfferedService {
     public List<Offered> getOfferedByDate(){
         return offeredRepo.readOfferedBySpecialDate();
     }
+
+    public int findCountOfTechnician(Long id){
+        return offeredRepo.findCountOfTechnician(id);
+    }
+
 }

@@ -155,7 +155,7 @@ public class ManagerService {
         return offeredService.getOfferedByUnderService(service);
     }
 
-    public List<Offered> getOfferedByStatus(boolean accepted){
+    public List<Offered> getOfferedByStatus(boolean accepted) {
         return offeredService.getOfferedByStatus(accepted);
     }
 
@@ -163,7 +163,15 @@ public class ManagerService {
         return offeredService.getOfferedByService(service);
     }
 
-    public List<Offered> getOfferedByDate(){
+    public List<Offered> getOfferedByDate() {
         return offeredService.getOfferedByDate();
+    }
+
+    public int findCountOfClient(Long id) {
+        return reportService.findCountOfClient(id);
+    }
+
+    public int findCountOfTechnician(Long id) {
+        return offeredService.findCountOfTechnician(id);
     }
 }
