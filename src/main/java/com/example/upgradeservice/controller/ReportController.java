@@ -13,6 +13,7 @@ import com.example.upgradeservice.service.ClientService;
 import com.example.upgradeservice.service.ReportService;
 import com.example.upgradeservice.service.SubjobService;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +43,8 @@ public class ReportController {
     }
 
     @PostMapping("/createOrder/{clientId}/{underServiceId}")
+    @PreAuthorize("hasRole('CLIENT')")
+
     public void createOrder(@Valid @RequestBody OrderedDto orderedDto, @PathVariable String clientId , @PathVariable String underServiceId){
         Ordered ordered = dtoToModelWithMapStruct(orderedDto);
         ordered.setClient(clientService.findByEmail(clientId));
@@ -50,31 +53,43 @@ public class ReportController {
     }
 
     @GetMapping("/readLogInClientOrder/{clientId}")
+    @PreAuthorize("hasRole('CLIENT')")
+
     public List<GetOrderedDto> readLogInClientOrder(@PathVariable Long clientId){
         return modelToGetDto(reportService.readLogInClientOrder(clientId));
     }
 
     @GetMapping("/readSuitableTech/{technicianId}")
+    @PreAuthorize("hasRole('TENCHNICAN')")
+
     public List<Ordered> readSuitableTech(@PathVariable Long technicianId){
         return reportService.readSuitableTech(technicianId);
     }
 
     @GetMapping("/makeIsDone/{id}/{point}")
+    @PreAuthorize("hasRole('CLIENT')")
+
     public void makeIsDone(@PathVariable Long id , double point){
         reportService.makeIsDone(id , point);
     }
 
     @PutMapping("/isStart/{orderedId}")
+    @PreAuthorize("hasRole('CLIENT')")
+
     public void isStart(@PathVariable Long orderedId){
         reportService.isStarted(orderedId);
     }
 
     @PutMapping("/isDone/{orderedId}")
+    @PreAuthorize("hasRole('CLIENT')")
+
     public void isDone(@PathVariable Long orderedId){
         reportService.isDone(orderedId);
     }
 
     @PutMapping("/isPayed/{orderedId}")
+    @PreAuthorize("hasRole('CLIENT')")
+
     public void isPayed(@RequestBody PayedDto payedDto , @PathVariable Long orderedId){
         reportService.isPayed(orderedId , payedDto);
     }

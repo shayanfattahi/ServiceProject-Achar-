@@ -4,6 +4,7 @@ import com.example.upgradeservice.model.PhotoTec;
 import com.example.upgradeservice.model.users.Technician;
 import com.example.upgradeservice.service.PhotoTecService;
 import com.example.upgradeservice.service.TechnicianService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class PhotoController {
     }
 
     @PostMapping("/photo/{techid}")
+    @PreAuthorize("hasRole('TECHNICIAN')")
     public void setPhoto(@ModelAttribute PhotoTec photoTec , @PathVariable Long techid){
         Technician technician = technicianService.readById(techid);
         photoTec.setTechnician(technician);
