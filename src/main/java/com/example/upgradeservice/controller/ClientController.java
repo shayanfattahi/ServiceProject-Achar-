@@ -3,6 +3,7 @@ package com.example.upgradeservice.controller;
 import com.example.upgradeservice.dto.client.ClientDto;
 import com.example.upgradeservice.dto.client.ClientMapper;
 import com.example.upgradeservice.dto.client.GetClientDto;
+import com.example.upgradeservice.exception.InvalidPassException;
 import com.example.upgradeservice.model.users.Client;
 import com.example.upgradeservice.service.ClientService;
 import jakarta.validation.Valid;
@@ -38,11 +39,14 @@ public class ClientController{
         return clientDto;
     }
 
-    @PutMapping("/changingpass")
+    @PutMapping("/changingpass/{pass}")
     @PreAuthorize("hasRole('CLIENT')")
-    public String changePass(@RequestBody String pass){
+    public String changePass(@PathVariable String pass){
         Client client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        client.setPass(passwordEncoder.encode(client.getPassword()));
+        if (!pass.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$")){
+            throw new InvalidPassException();
+        }
+        client.setPass(passwordEncoder.encode(pass));
         clientService.create(client);
         return "ok";
     }

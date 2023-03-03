@@ -3,6 +3,7 @@ package com.example.upgradeservice.controller;
 import com.example.upgradeservice.dto.technician.GetTechnicianDto;
 import com.example.upgradeservice.dto.technician.TechnicianDto;
 import com.example.upgradeservice.dto.technician.TechnicianMapper;
+import com.example.upgradeservice.exception.InvalidPassException;
 import com.example.upgradeservice.model.users.TecStatus;
 import com.example.upgradeservice.model.users.Technician;
 import com.example.upgradeservice.service.TechnicianService;
@@ -42,11 +43,14 @@ public class TechnicianController {
         return "ok";
     }
 
-    @PutMapping("/changingpass")
+    @PutMapping("/changingpass/{pass}")
     @PreAuthorize("hasRole('TECHNICIAN')")
-    public String changePass(@RequestBody String pass){
+    public String changePass(@PathVariable String pass){
         Technician technician = (Technician) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        technician.setPass(passwordEncoder.encode(technician.getPassword()));
+        if (!pass.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$")){
+            throw new InvalidPassException();
+        }
+        technician.setPass(passwordEncoder.encode(pass));
         technicianService.create(technician);
         return "ok";
     }
