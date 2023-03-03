@@ -2,6 +2,7 @@ package com.example.upgradeservice.repository;
 
 import com.example.upgradeservice.model.Offered;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -16,14 +17,12 @@ public interface OfferedRepo extends JpaRepository<Offered , Long> {
 
     List<Offered> findOfferedByClientIdAndOrderedIdOrderByPriceAsc(Long id , Long id2);
 
-    @Query(value = "Select * from offered\n" +
-            "JOIN technician t on offered.technician_id = t.id\n" +
+    @Query(value = "Select offered.id, offered.text, offered.price, offered.date, offered.accepted, offered.time, offered.client_id , offered.technician_id , offered.ordered_id , offered.under_service_id from offered\n " +
+            "JOIN technician t on offered.technician_id=t.id\n " +
             "where offered.client_id=?1 ORDER BY t.point desc" , nativeQuery = true)
     List<Offered> readGoodPoint(Long id);
 
-    @Query(value = "Select * from offered\n" +
-            "INNER JOIN under_service t on offered.under_service_id = t.id\n" +
-            "where t.services_id=?1" , nativeQuery = true)
+    @Query(value = "select offered.id, offered.text, offered.price, offered.date, offered.accepted, offered.time, offered.client_id , offered.technician_id , offered.ordered_id , offered.under_service_id from offered inner join under_service s on offered.under_service_id = s.id where s.services_id =?1" , nativeQuery = true)
     List<Offered> readOfferedByService(Long service);
 
 

@@ -2,12 +2,22 @@ package com.example.upgradeservice.service;
 
 import com.example.upgradeservice.exception.*;
 import com.example.upgradeservice.model.Role;
+import com.example.upgradeservice.model.users.Client;
 import com.example.upgradeservice.model.users.Technician;
 import com.example.upgradeservice.repository.TechnicianRepo;
 import com.example.upgradeservice.utils.Utils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Root;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,4 +137,21 @@ public class TechnicianService {
 //    public List<Ordered> getOrderedOfTechnician(Long id){
 //        return reportService.readOrderOfTechnician(id);
 //    }
+
+    @PersistenceContext
+    private EntityManager em;
+    @Transactional
+    List<Technician> getTechnicianByPoint(){
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Technician> criteriaQuery = criteriaBuilder.createQuery(Technician.class);
+        Root<Technician> studentRoot = criteriaQuery.from(Technician.class);
+        criteriaQuery.select(studentRoot);
+//        List<Order> orderList = new ArrayList();
+//        orderList.add(criteriaBuilder.desc(studentRoot.get("point")));
+//        return criteriaQuery.orderBy(orderList);
+        criteriaQuery.select(studentRoot).orderBy(criteriaBuilder.asc(studentRoot.get("point")));
+        TypedQuery<Technician> typedQuery = em.createQuery(criteriaQuery);
+        List<Technician> studentList = typedQuery.getResultList();
+        return studentList;
+    }
 }

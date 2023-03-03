@@ -174,4 +174,8 @@ public class ManagerService {
     public int findCountOfTechnician(Long id) {
         return offeredService.findCountOfTechnician(id);
     }
+
+    public List<Technician> getTechnicianByPoint(){
+        return technicianService.getTechnicianByPoint();
+    }
 }

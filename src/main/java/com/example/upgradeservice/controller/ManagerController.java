@@ -73,10 +73,10 @@ public class ManagerController {
     }
 
 
-    //    @GetMapping("/getTechnicianByPoint")
-//    public List<Technician> getTechnicianByPoint(){
-//        return managerService.getTechnicianByPoint();
-//    }
+    @GetMapping("/getTechnicianByPoint")
+    public List<Technician> getTechnicianByPoint(){
+       return managerService.getTechnicianByPoint();
+    }
 //
 //    @GetMapping("/getClientByLastName/{lastname}")
 //    public List<Client> getClientByLastName(@PathVariable String lastname){
